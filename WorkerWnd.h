@@ -29,7 +29,6 @@ protected:
 	virtual void OnButtonClick_Send( wxCommandEvent& event ) override;
 	virtual void OnButtonClick_Close( wxCommandEvent& event ) override;
 
-
 	void OnEvtIPComm(xEvtIPComm& event);
 };
 

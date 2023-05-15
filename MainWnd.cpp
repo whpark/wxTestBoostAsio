@@ -53,7 +53,7 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 				if (m_io_context.stopped())
 					m_io_context.restart();
 				//asio::io_context io_context;
-				xEchoServer server(m_io_context, port);
+				xChatServer server(m_io_context, port);
 
 				Log("Listener thread started");
 				m_io_context.run();

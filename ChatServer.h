@@ -114,6 +114,7 @@ protected:
 class xChatServer {
 protected:
 	asio::io_context& io_context_;
+	xChatRoom room_;
 public:
 	xChatServer(asio::io_context& io_context, short port)
 		: io_context_(io_context), acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
@@ -130,7 +131,7 @@ private:
 					return;
 
 				Log("<<< session {}", std::this_thread::get_id());
-				std::make_shared<session>(std::move(socket))->start();
+				std::make_shared<xChatSession>(std::move(socket), room_)->Start();
 				Log(">>> session {}", std::this_thread::get_id());
 
 				Accept();

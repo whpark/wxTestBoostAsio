@@ -60,15 +60,11 @@ protected:
 		asio::async_connect(m_socket, endpoints,
 			[this](std::error_code ec, asio::ip::tcp::endpoint) {
 				if (!ec) {
-					auto* p = new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_CONNECTED, "Connected");
-					p->SetEventObject(m_pOwner);
-					wxQueueEvent(m_pOwner, p);
+					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_CONNECTED, "Connected"));
 
 					DoReadLine();
 				} else {
-					auto* p = new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_NOT_CONNECTED, "NOT Connected");
-					p->SetEventObject(m_pOwner);
-					wxQueueEvent(m_pOwner, p);
+					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_NOT_CONNECTED, "NOT Connected"));
 				}
 			});
 
@@ -101,6 +97,7 @@ protected:
 				}
 				else {
 					m_socket.close();
+					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_DISCONNECTED, "Disconnected"));
 				}
 			});
 	}
@@ -115,6 +112,7 @@ protected:
 				}
 				else {
 					m_socket.close();
+					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_DISCONNECTED, "Disconnected"));
 				}
 			});
 	}

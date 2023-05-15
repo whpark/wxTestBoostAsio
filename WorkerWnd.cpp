@@ -11,6 +11,7 @@ xWorkerWnd::~xWorkerWnd() {
 	m_io_context.stop();
 	m_client.reset();
 	Unbind(wxEVT_IP_COMM, &xWorkerWnd::OnEvtIPComm, this, GetId());
+	Log("Client Closed");
 }
 
 
@@ -29,17 +30,10 @@ void xWorkerWnd::OnButtonClick_Send(wxCommandEvent& event) {
 	auto str = ui_textMessage->GetValue();
 	xChatMessage msg = str.ToStdString();
 	m_client->Write(msg);
+	ui_log->AppendText("Sent: ");
 	ui_log->AppendText(msg);
 	ui_log->AppendText("\n");
 
-	//ProcessEvent(xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
-	
-	//xEvtIPComm evt(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg");
-	//evt.SetEventObject(this);
-	//ProcessEvent(evt);
-
-	//wxPostEvent(this, xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
-	//wxQueueEvent(this, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
 }
 
 void xWorkerWnd::OnButtonClick_Close(wxCommandEvent& event) {
@@ -52,13 +46,6 @@ void xWorkerWnd::OnButtonClick_Close(wxCommandEvent& event) {
 		evt.SetEventObject(this);
 		ProcessWindowEvent(evt);
 	}
-
-	//wxCommandEvent event(MY_EVENT, GetId());
-	//event.SetEventObject(this);
-	//// Give it some contents
-	//event.SetString("Hello");
-	//// Do send it
-	//ProcessWindowEvent(event);
 }
 
 void xWorkerWnd::OnEvtIPComm(xEvtIPComm& event) {
@@ -68,13 +55,18 @@ void xWorkerWnd::OnEvtIPComm(xEvtIPComm& event) {
 		break;
 	case xEvtIPComm::EVT_NOT_CONNECTED:
 		Log("NOT Connected");
+		Close();
 		break;
 	case xEvtIPComm::EVT_DISCONNECTED:
 		Log("Disconnected");
+		Close();
 		break;
 	case xEvtIPComm::EVT_MESSAGE:
+		ui_log->AppendText("Recv: ");
 		ui_log->AppendText(event.m_msg);
 		ui_log->AppendText("\n");
+		auto r = ui_log->GetLastPosition();
+		ui_log->ShowPosition(r);
 		//ui_log->Replace(-1, -1, "\n");
 		break;
 	}
