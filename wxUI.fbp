@@ -377,7 +377,7 @@
                 </object>
             </object>
             <object class="wxTimer" expanded="1">
-                <property name="enabled">0</property>
+                <property name="enabled">1</property>
                 <property name="id">wxTIMER_UPDATE_UI</property>
                 <property name="name">m_timerUpdateUI</property>
                 <property name="oneshot">0</property>

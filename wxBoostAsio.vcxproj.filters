@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd;cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Comm">
+      <UniqueIdentifier>{b06d9aa2-cc77-4985-a3f7-60c0b25ff488}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -35,8 +38,23 @@
     <ClInclude Include="WorkerWnd.h">
       <Filter>Framework - wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="EchoServer.h">
+      <Filter>Comm</Filter>
+    </ClInclude>
     <ClInclude Include="Comm.h">
-      <Filter>Framework - wxWidgets</Filter>
+      <Filter>Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatServer.h">
+      <Filter>Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatClient.h">
+      <Filter>Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatPacket.h">
+      <Filter>Comm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +87,7 @@
       <Filter>Framework - wxWidgets</Filter>
     </ClCompile>
     <ClCompile Include="Comm.cpp">
-      <Filter>Framework - wxWidgets</Filter>
+      <Filter>Comm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

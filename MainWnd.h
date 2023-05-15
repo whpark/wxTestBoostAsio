@@ -25,9 +25,8 @@ public:
 
 protected:
 	// server
-	std::shared_ptr<boost::asio::io_service> m_io;
-	std::shared_ptr<boost::asio::io_service::work> m_work;
-	std::shared_ptr<boost::asio::io_service::strand> m_strand;
+	boost::asio::io_context m_io_context;
+	//std::shared_ptr<boost::asio::io_context::strand> m_strand;
 
 	// listener
 	std::optional<std::jthread> m_listener;

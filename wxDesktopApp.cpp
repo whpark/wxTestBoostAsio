@@ -7,12 +7,6 @@
 
 wxIMPLEMENT_APP(wxDesktopApp);
 
-template <typename ... TArgs>
-void Log(fmt::format_string<TArgs...> fmt, TArgs&& ... args) {
-	wxLogInfo("%s", fmt::format(fmt, std::forward<TArgs>(args)...));
-	//wxGetApp().m_wndLog->LogText("\n");
-}
-
 void Print(int* count, boost::asio::steady_timer* t) {
 	Log("count : {}, at{}", ++*count, std::this_thread::get_id());
 	if (*count < 5) {
@@ -62,7 +56,7 @@ bool wxDesktopApp::OnInit() {
 	wxLog::EnableLogging(false);
 #endif
 
-	Test();
+	//Test();
 
 	// Startup Folder
 	gtl::SetCurrentPath_ProjectFolder(stdfs::path(L"."));

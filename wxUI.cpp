@@ -53,6 +53,8 @@ IMainWnd::IMainWnd( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->SetSizer( bSizerTOP );
 	this->Layout();
 	m_timerUpdateUI.SetOwner( this, wxTIMER_UPDATE_UI );
+	m_timerUpdateUI.Start( 100 );
+
 
 	this->Centre( wxBOTH );
 

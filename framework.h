@@ -23,11 +23,13 @@
 //#include <memory.h>
 //#include <tchar.h>
 
+#define BOOST_ASIO_NO_DEPRECATED
+//#define BOOST_ASIO_NO_DEPRECATED_MSGS
 #include "boost/asio.hpp"
 #include "boost/bind/bind.hpp"
 
 #include "gtl/gtl.h"
-#include "gtl/json_proxy.h"
+#include "gtl/reflection_glaze.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/stopwatch.h"
@@ -41,3 +43,18 @@ namespace stdfs = std::filesystem;
 namespace stdc = std::chrono;
 namespace stdr = std::ranges;
 namespace stdv = std::views;
+
+namespace asio = boost::asio;
+
+
+// Log (fmt::format)
+template < typename ... TArgs >
+constexpr void Log(fmt::format_string<TArgs...> fmt, TArgs&& ... args) {
+	auto msg = fmt::format(fmt, std::forward<TArgs&&>(args)...);
+	wxLogInfo("%s", msg);
+}
+template < typename ... TArgs >
+constexpr void Log(fmt::wformat_string<TArgs...> fmt, TArgs&& ... args) {
+	auto msg = fmt::format(fmt, std::forward<TArgs&&>(args)...);
+	wxLogInfo(L"%s", msg);
+}

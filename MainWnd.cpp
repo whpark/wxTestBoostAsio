@@ -1,23 +1,11 @@
 ﻿#include "pch.h"
 #include "wxDesktopApp.h"
 #include "MainWnd.h"
+#include "WorkerWnd.h"
 #include "gtl/wx/util.h"
 
-#include "Server.h"
 
-namespace asio = boost::asio;
-
-// Log (fmt::format)
-template < typename ... TArgs >
-constexpr void Log(fmt::format_string<TArgs...> fmt, TArgs&& ... args) {
-	auto msg = fmt::format(fmt, std::forward<TArgs&&>(args)...);
-	wxLogInfo("%s", msg);
-}
-template < typename ... TArgs >
-constexpr void Log(fmt::wformat_string<TArgs...> fmt, TArgs&& ... args) {
-	auto msg = fmt::format(fmt, std::forward<TArgs&&>(args)...);
-	wxLogInfo(L"%s", msg);
-}
+#include "Comm.h"
 
 xMainWnd::xMainWnd( wxWindow* parent ) : ui::IMainWnd( parent ) {
 	m_bInitialized = true;
@@ -56,26 +44,24 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 
 		m_bListenerStopped = false;
 		m_listener = std::jthread([port, this](std::stop_token st) {
-			m_io = std::make_shared<asio::io_service>();
-			m_work = std::make_shared<asio::io_service::work>(*m_io);
-			m_strand = std::make_shared<asio::io_service::strand>(*m_io);
+			//m_io = std::make_shared<asio::io_context>();
+			//m_strand = std::make_shared<asio::io_context::strand>(*m_io);
+
+			//asio::io_context io_context;
 
 			{
-				std::list<std::shared_ptr<xServer>> servers;
-				servers.push_back(std::make_shared<xServer>(*m_io, *m_strand, port));
+				xEchoServer server(m_io_context, port);
 
 				Log("Listener thread started");
+				//m_io_context.run();
 				while (!st.stop_requested()) {
-					m_io->poll();
-					Log("Listener thread running");
-					std::this_thread::sleep_for(1000ms);
+					m_io_context.poll_one();
+					std::this_thread::yield();
 				}
+				//Log("Listener thread running");
+				//std::this_thread::sleep_for(1000ms);
 				Log("Listener thread stopped");
 			}
-
-			m_strand.reset();
-			m_work.reset();
-			m_io.reset();
 			m_bListenerStopped = true;
 		});
 
@@ -83,10 +69,12 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 		// stop listening
 		if (!m_listener)
 			return;
+		m_io_context.stop();
 		m_listener->request_stop();
 	}
 
 }
 
 void xMainWnd::OnConnectTo(wxCommandEvent& event) {
+	auto worker = std::make_shared<xWorkerWnd>(this, std::move(socket));
 }
