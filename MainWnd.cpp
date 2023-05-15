@@ -76,5 +76,22 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 }
 
 void xMainWnd::OnConnectTo(wxCommandEvent& event) {
-	auto worker = std::make_shared<xWorkerWnd>(this, std::move(socket));
+	auto url = ui_textIP->GetValue();
+	// split url into ip and port
+	auto pos = url.find(':');
+	if (pos == std::string::npos) {
+		Log("Invalid URL");
+		return;
+	}
+	std::string ip = url.substr(0, pos).ToStdString();
+	auto port = atoi(url.substr(pos + 1));
+	if (port == 0) {
+		Log("Invalid URL");
+		return;
+	}
+
+	auto worker = std::make_unique<xWorkerWnd>(this, ip, port);
+	worker->Show(true);
+	worker->SetFocus();
+	worker.release();
 }

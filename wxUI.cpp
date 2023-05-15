@@ -139,7 +139,7 @@ IWorkerWnd::IWorkerWnd( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 
-	ui_log = new wxRichTextCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
+	ui_log = new wxRichTextCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
 	bSizer8->Add( ui_log, 1, wxEXPAND | wxALL, 5 );
 
 
@@ -150,7 +150,7 @@ IWorkerWnd::IWorkerWnd( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxBoxSizer* bSizer71;
 	bSizer71 = new wxBoxSizer( wxVERTICAL );
 
-	ui_logHex = new wxRichTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
+	ui_logHex = new wxRichTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
 	bSizer71->Add( ui_logHex, 1, wxEXPAND | wxALL, 5 );
 
 

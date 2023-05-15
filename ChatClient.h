@@ -5,18 +5,29 @@ public:
 	using this_t = xChatClient;
 
 protected:
+	wxEvtHandler* m_pOwner{};
 	asio::io_context& m_io_context;
 	asio::ip::tcp::socket m_socket;
+	asio::ip::tcp::resolver::results_type m_endpoints;
 	xChatMessage m_msg_read;
 	xQueueChatMessage m_msgs_to_write;
 
 	std::mutex m_mtx_read_msg;
 	xQueueChatMessage m_msgs_read;
 
+	std::optional<std::jthread> m_worker;
+
 public:
-	xChatClient(asio::io_context& io_context, asio::ip::tcp::resolver::results_type const& endpoints)
-		: m_io_context(io_context), m_socket(io_context)
+	xChatClient(wxEvtHandler* pOwner, asio::io_context& io_context, asio::ip::tcp::resolver::results_type const& endpoints)
+		: m_pOwner(pOwner), m_io_context(io_context), m_socket(io_context), m_endpoints(endpoints)
 	{
+		DoConnect(m_endpoints);
+	}
+	xChatClient(wxEvtHandler* pOwner, asio::io_context& io_context, std::string const& ip, int port)
+		: m_pOwner(pOwner), m_io_context(io_context), m_socket(io_context)
+	{
+		asio::ip::tcp::resolver resolver(io_context);
+		auto endpoints = resolver.resolve(ip, std::to_string(port));
 		DoConnect(endpoints);
 	}
 
@@ -47,9 +58,22 @@ protected:
 		asio::async_connect(m_socket, endpoints,
 			[this](std::error_code ec, asio::ip::tcp::endpoint) {
 				if (!ec) {
+					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_CONNECTED, "Connected"));
+
 					DoReadLine();
+				} else {
+					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_NOT_CONNECTED, "NOT Connected"));
 				}
 			});
+
+		m_worker.emplace([this]
+			{
+				//while (!stop.stop_requested() and !m_io_context.stopped())
+				//	m_io_context.run_one();
+				m_io_context.run();
+				Log("Exit - DoConnect()");
+			}
+		);
 	}
 
 	void DoReadLine() {
@@ -58,11 +82,12 @@ protected:
 				if (!ec) {
 					auto msg = m_msg_read.substr(0, length);
 					m_msg_read.erase(0, length);
-					// ToDo: notify msg
 					{
 						std::unique_lock lock(m_mtx_read_msg);
 						m_msgs_read.emplace_back(std::move(msg));
 					}
+					// ToDo: notify msg
+					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, msg));
 
 					DoReadLine();
 				}

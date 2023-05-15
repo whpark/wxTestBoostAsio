@@ -1,5 +1,29 @@
 #pragma once
 
+class xEvtIPComm : public wxEvent {
+public:
+	enum EVENT : int8_t {
+		EVT_CONNECTED,
+		EVT_NOT_CONNECTED,
+		EVT_DISCONNECTED,
+		EVT_MESSAGE,
+		
+		nTYPE
+	};
+
+	EVENT m_evt;
+	std::string m_msg;
+protected:
+	xEvtIPComm(xEvtIPComm const&) = default;
+public:
+	xEvtIPComm(wxEventType eventType, EVENT evt, std::string const& msg) : wxEvent(eventType), m_evt(evt), m_msg(std::move(msg)) {}
+
+	virtual wxEvent *Clone() const override { return new xEvtIPComm(*this); }
+};
+//wxDEFINE_EVENT(wxEVT_IP_COMM, xEvtIPComm);
+inline static const wxEventTypeTag< xEvtIPComm > wxEVT_IP_COMM( wxNewEventType() );
+
+
 // Class to manage the memory to be used for handler-based custom allocation.
 // It contains a single block of memory which may be returned for allocation
 // requests. If the memory is in use when an allocation request is made, the
