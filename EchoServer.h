@@ -22,6 +22,8 @@ private:
 				handler_allocator<int>(handler_memory_),
 				[this, self](boost::system::error_code ec, std::size_t length)
 				{
+					std::string_view sv(data_.data(), length);
+					Log("Read({} bytes) : {}", length, sv);
 					if (!ec) {
 						do_write(length);
 					}
@@ -56,6 +58,7 @@ private:
 class xEchoServer {
 protected:
 	asio::io_context& io_context_;
+	asio::ip::tcp::acceptor acceptor_;
 public:
 	xEchoServer(asio::io_context& io_context, short port)
 		: io_context_(io_context), acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
@@ -68,8 +71,10 @@ private:
 		acceptor_.async_accept(
 			[this](boost::system::error_code ec, asio::ip::tcp::socket socket)
 			{
-				if (ec)
+				if (ec) {
+					Log("Listener Failed");
 					return;
+				}
 
 				Log("<<< session {}", std::this_thread::get_id());
 				std::make_shared<session>(std::move(socket))->start();
@@ -81,5 +86,4 @@ private:
 		Log("EXIT acceptor");
 	}
 
-	asio::ip::tcp::acceptor acceptor_;
 };

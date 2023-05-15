@@ -27,6 +27,8 @@ public:
 			m_msgs.pop_front();
 		m_msgs.push_back(msg);
 
+		Log("Received: {}", msg);
+
 		for (auto worker : m_workers)
 			worker->OnMessage(msg);
 	}

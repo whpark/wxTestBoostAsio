@@ -97,8 +97,8 @@ IWorkerWnd::IWorkerWnd( wxWindow* parent, wxWindowID id, const wxString& title, 
 	ui_textPeer = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
 	bSizer5->Add( ui_textPeer, 1, wxALL, 5 );
 
-	m_btnClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
-	bSizer5->Add( m_btnClose, 0, wxALL, 5 );
+	ui_btnClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	bSizer5->Add( ui_btnClose, 0, wxALL, 5 );
 
 
 	bSizer7->Add( bSizer5, 0, wxEXPAND, 5 );
@@ -176,6 +176,7 @@ IWorkerWnd::IWorkerWnd( wxWindow* parent, wxWindowID id, const wxString& title, 
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	ui_btnClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IWorkerWnd::OnButtonClick_Close ), NULL, this );
 	ui_textMessage->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( IWorkerWnd::OnTextEnter_Message ), NULL, this );
 	ui_btnSend->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IWorkerWnd::OnButtonClick_Send ), NULL, this );
 	m_textParameters->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( IWorkerWnd::OnTextEnter_Parameters ), NULL, this );
@@ -185,6 +186,7 @@ IWorkerWnd::IWorkerWnd( wxWindow* parent, wxWindowID id, const wxString& title, 
 IWorkerWnd::~IWorkerWnd()
 {
 	// Disconnect Events
+	ui_btnClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IWorkerWnd::OnButtonClick_Close ), NULL, this );
 	ui_textMessage->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( IWorkerWnd::OnTextEnter_Message ), NULL, this );
 	ui_btnSend->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IWorkerWnd::OnButtonClick_Send ), NULL, this );
 	m_textParameters->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( IWorkerWnd::OnTextEnter_Parameters ), NULL, this );

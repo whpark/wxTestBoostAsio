@@ -3,10 +3,16 @@
 #include "WorkerWnd.h"
 
 xWorkerWnd::xWorkerWnd(wxWindow* parent, std::string ip, int port) : ui::IWorkerWnd(parent) {
-	Bind(wxEVT_IP_COMM, &xWorkerWnd::OnEvtIPComm, this);
-	//this->Connect(wxEVT_IP_COMM, &xWorkerWnd::OnEvtIPComm, nullptr, this);
+	Bind(wxEVT_IP_COMM, &xWorkerWnd::OnEvtIPComm, this, GetId());
 	m_client.emplace(this, m_io_context, ip, port);
 }
+
+xWorkerWnd::~xWorkerWnd() {
+	m_io_context.stop();
+	m_client.reset();
+	Unbind(wxEVT_IP_COMM, &xWorkerWnd::OnEvtIPComm, this, GetId());
+}
+
 
 void xWorkerWnd::OnTimer_UpdateUI(wxTimerEvent& event) {
 }
@@ -20,9 +26,39 @@ void xWorkerWnd::OnTextEnter_Parameters(wxCommandEvent& event) {
 }
 
 void xWorkerWnd::OnButtonClick_Send(wxCommandEvent& event) {
+	auto str = ui_textMessage->GetValue();
+	xChatMessage msg = str.ToStdString();
+	m_client->Write(msg);
+	ui_log->AppendText(msg);
+	ui_log->AppendText("\n");
 
-	wxPostEvent(this, xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
-	wxQueueEvent(this, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
+	//ProcessEvent(xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
+	
+	//xEvtIPComm evt(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg");
+	//evt.SetEventObject(this);
+	//ProcessEvent(evt);
+
+	//wxPostEvent(this, xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
+	//wxQueueEvent(this, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
+}
+
+void xWorkerWnd::OnButtonClick_Close(wxCommandEvent& event) {
+	if constexpr (true) {
+		wxQueueEvent(this, new xEvtIPComm(GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, "msg"));
+	}
+
+	if constexpr (false) {
+		wxCommandEvent evt(wxEVT_BUTTON, GetId());
+		evt.SetEventObject(this);
+		ProcessWindowEvent(evt);
+	}
+
+	//wxCommandEvent event(MY_EVENT, GetId());
+	//event.SetEventObject(this);
+	//// Give it some contents
+	//event.SetString("Hello");
+	//// Do send it
+	//ProcessWindowEvent(event);
 }
 
 void xWorkerWnd::OnEvtIPComm(xEvtIPComm& event) {
@@ -37,8 +73,8 @@ void xWorkerWnd::OnEvtIPComm(xEvtIPComm& event) {
 		Log("Disconnected");
 		break;
 	case xEvtIPComm::EVT_MESSAGE:
-		ui_log->SetSelection(-1, -1);
-		ui_log->Replace(-1, -1, event.m_msg);
+		ui_log->AppendText(event.m_msg);
+		ui_log->AppendText("\n");
 		//ui_log->Replace(-1, -1, "\n");
 		break;
 	}

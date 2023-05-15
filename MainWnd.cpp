@@ -32,33 +32,35 @@ void xMainWnd::OnTimer_UpdateUI(wxTimerEvent& event) {
 	if (m_listener and m_bListenerStopped and m_listener->joinable()) {
 		m_listener.reset();
 	}
+	if (ui_chkListener->IsChecked()) {
+		if (!m_listener)
+			ui_chkListener->Set3StateValue(wxCheckBoxState::wxCHK_UNCHECKED);
+	} else {
+		if (m_listener)
+			ui_chkListener->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
+	}
 }
 
 void xMainWnd::OnChkListen(wxCommandEvent& event) {
-	if (ui_chkListener->IsChecked()) {
+	if (!m_listener) {
 		// start listening
-		if (m_listener)
-			return;
 
-		int port = std::atoi(ui_textIP->GetValue().c_str());
+		int port = std::atoi(ui_textPort->GetValue().c_str());
 
 		m_bListenerStopped = false;
 		m_listener = std::jthread([port, this](std::stop_token st) {
-			//m_io = std::make_shared<asio::io_context>();
-			//m_strand = std::make_shared<asio::io_context::strand>(*m_io);
-
-			//asio::io_context io_context;
-
 			{
+				if (m_io_context.stopped())
+					m_io_context.restart();
+				//asio::io_context io_context;
 				xEchoServer server(m_io_context, port);
 
 				Log("Listener thread started");
-				//m_io_context.run();
-				while (!st.stop_requested()) {
-					m_io_context.poll_one();
-					std::this_thread::yield();
-				}
-				//Log("Listener thread running");
+				m_io_context.run();
+				//while (!st.stop_requested()) {
+				//	m_io_context.poll_one();
+				//	std::this_thread::yield();
+				//}
 				//std::this_thread::sleep_for(1000ms);
 				Log("Listener thread stopped");
 			}
@@ -67,8 +69,8 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 
 	} else {
 		// stop listening
-		if (!m_listener)
-			return;
+		//if (!m_listener)
+		//	return;
 		m_io_context.stop();
 		m_listener->request_stop();
 	}

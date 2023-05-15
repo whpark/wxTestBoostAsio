@@ -1,5 +1,6 @@
 #pragma once
 
+
 class xEvtIPComm : public wxEvent {
 public:
 	enum EVENT : int8_t {
@@ -16,7 +17,7 @@ public:
 protected:
 	xEvtIPComm(xEvtIPComm const&) = default;
 public:
-	xEvtIPComm(wxEventType eventType, EVENT evt, std::string const& msg) : wxEvent(eventType), m_evt(evt), m_msg(std::move(msg)) {}
+	xEvtIPComm(int winid, wxEventType eventType, EVENT evt, std::string const& msg) : wxEvent(winid, eventType), m_evt(evt), m_msg(std::move(msg)) { }
 
 	virtual wxEvent *Clone() const override { return new xEvtIPComm(*this); }
 };

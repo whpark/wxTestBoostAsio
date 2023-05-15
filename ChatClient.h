@@ -5,7 +5,7 @@ public:
 	using this_t = xChatClient;
 
 protected:
-	wxEvtHandler* m_pOwner{};
+	wxWindow* m_pOwner{};
 	asio::io_context& m_io_context;
 	asio::ip::tcp::socket m_socket;
 	asio::ip::tcp::resolver::results_type m_endpoints;
@@ -18,12 +18,12 @@ protected:
 	std::optional<std::jthread> m_worker;
 
 public:
-	xChatClient(wxEvtHandler* pOwner, asio::io_context& io_context, asio::ip::tcp::resolver::results_type const& endpoints)
+	xChatClient(wxWindow* pOwner, asio::io_context& io_context, asio::ip::tcp::resolver::results_type const& endpoints)
 		: m_pOwner(pOwner), m_io_context(io_context), m_socket(io_context), m_endpoints(endpoints)
 	{
 		DoConnect(m_endpoints);
 	}
-	xChatClient(wxEvtHandler* pOwner, asio::io_context& io_context, std::string const& ip, int port)
+	xChatClient(wxWindow* pOwner, asio::io_context& io_context, std::string const& ip, int port)
 		: m_pOwner(pOwner), m_io_context(io_context), m_socket(io_context)
 	{
 		asio::ip::tcp::resolver resolver(io_context);
@@ -31,10 +31,12 @@ public:
 		DoConnect(endpoints);
 	}
 
-	void Write(xChatMessage const& msg) {
-		asio::post(m_io_context, [this, msg]{
+	void Write(xChatMessage msg) {
+		if (!msg.ends_with('\n'))
+			msg += "\n";
+		asio::post(m_io_context, [this, str = std::move(msg)]{
 			bool bWriting = !m_msgs_to_write.empty();
-			m_msgs_to_write.push_back(msg);
+			m_msgs_to_write.push_back(std::move(str));
 			if (!bWriting)
 				DoWrite();
 		});
@@ -58,11 +60,15 @@ protected:
 		asio::async_connect(m_socket, endpoints,
 			[this](std::error_code ec, asio::ip::tcp::endpoint) {
 				if (!ec) {
-					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_CONNECTED, "Connected"));
+					auto* p = new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_CONNECTED, "Connected");
+					p->SetEventObject(m_pOwner);
+					wxQueueEvent(m_pOwner, p);
 
 					DoReadLine();
 				} else {
-					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_NOT_CONNECTED, "NOT Connected"));
+					auto* p = new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_NOT_CONNECTED, "NOT Connected");
+					p->SetEventObject(m_pOwner);
+					wxQueueEvent(m_pOwner, p);
 				}
 			});
 
@@ -84,10 +90,12 @@ protected:
 					m_msg_read.erase(0, length);
 					{
 						std::unique_lock lock(m_mtx_read_msg);
-						m_msgs_read.emplace_back(std::move(msg));
+						m_msgs_read.emplace_back(msg);
 					}
 					// ToDo: notify msg
-					wxQueueEvent(m_pOwner, new xEvtIPComm(wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, msg));
+					auto* p = new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_MESSAGE, msg);
+					p->SetEventObject(m_pOwner);
+					wxQueueEvent(m_pOwner, p);
 
 					DoReadLine();
 				}

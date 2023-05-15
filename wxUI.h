@@ -84,7 +84,7 @@ namespace ui
 
 			wxStaticText* m_staticText4;
 			wxTextCtrl* ui_textPeer;
-			wxButton* m_btnClose;
+			wxButton* ui_btnClose;
 			wxStaticText* m_staticText2;
 			wxTextCtrl* ui_textMessage;
 			wxButton* ui_btnSend;
@@ -98,6 +98,7 @@ namespace ui
 			wxTimer m_timerUpdateUI;
 
 			// Virtual event handlers, override them in your derived class
+			virtual void OnButtonClick_Close( wxCommandEvent& event ) = 0;
 			virtual void OnTextEnter_Message( wxCommandEvent& event ) = 0;
 			virtual void OnButtonClick_Send( wxCommandEvent& event ) = 0;
 			virtual void OnTextEnter_Parameters( wxCommandEvent& event ) = 0;
