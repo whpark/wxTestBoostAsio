@@ -43,7 +43,7 @@ public:
 	}
 
 	void Close() {
-		asio::post(m_io_context, [this]{ m_socket.close(); });
+		asio::post(m_io_context, [this]{ m_socket.shutdown(m_socket.shutdown_both); m_socket.close(); });
 	}
 
 	std::optional<xChatMessage> PopMessage() {
@@ -96,6 +96,7 @@ protected:
 					DoReadLine();
 				}
 				else {
+					m_socket.shutdown(m_socket.shutdown_both); 
 					m_socket.close();
 					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_DISCONNECTED, "Disconnected"));
 				}
@@ -111,6 +112,7 @@ protected:
 						DoWrite();
 				}
 				else {
+					m_socket.shutdown(m_socket.shutdown_both); 
 					m_socket.close();
 					wxQueueEvent(m_pOwner, new xEvtIPComm(m_pOwner->GetId(), wxEVT_IP_COMM, xEvtIPComm::EVT_DISCONNECTED, "Disconnected"));
 				}

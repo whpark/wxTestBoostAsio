@@ -5,12 +5,9 @@
 #include "gtl/wx/util.h"
 
 
-#include "Comm.h"
-
 xMainWnd::xMainWnd( wxWindow* parent ) : ui::IMainWnd( parent ) {
-	m_bInitialized = true;
 	gtl::wx::LoadWindowPosition(wxGetApp().m_reg, "MainWindow"s, this);
-
+	m_bInitialized = true;
 }
 
 void xMainWnd::OnMove(wxMoveEvent& event) {
@@ -28,6 +25,8 @@ void xMainWnd::OnSize(wxSizeEvent& event) {
 }
 
 void xMainWnd::OnTimer_UpdateUI(wxTimerEvent& event) {
+	if (!m_bInitialized)
+		return;
 	// Garbage Collection, listener
 	if (m_listener and m_bListenerStopped and m_listener->joinable()) {
 		m_listener.reset();
@@ -39,6 +38,30 @@ void xMainWnd::OnTimer_UpdateUI(wxTimerEvent& event) {
 		if (m_listener)
 			ui_chkListener->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
 	}
+	if (ui_chkListenerTS->IsChecked()) {
+		if (!m_serverTS)
+			ui_chkListenerTS->Set3StateValue(wxCheckBoxState::wxCHK_UNCHECKED);
+	}
+	else {
+		if (m_serverTS)
+			ui_chkListenerTS->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
+	}
+
+	std::string str;
+	if (m_serverTS) {
+		size_t nClients{};
+		{
+			std::shared_lock lock(m_serverTS->m_mtxSockets);
+			nClients = m_serverTS->m_sockets.size();
+		}
+
+		str += std::format("ServerTS Clients : {}\n", nClients);
+
+	}
+	if (ui_textStatus->GetValue() != wxString(str)) {
+		ui_textStatus->SetValue(str);
+	}
+
 }
 
 void xMainWnd::OnChkListen(wxCommandEvent& event) {
@@ -74,7 +97,21 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 		m_io_context.stop();
 		m_listener->request_stop();
 	}
+}
 
+void xMainWnd::OnChkListenTS(wxCommandEvent& event) {
+	if (!m_serverTS) {
+		// start listening
+
+		int port = std::atoi(ui_textPortTS->GetValue().c_str());
+
+		m_serverTS.emplace();
+		m_serverTS->Start(port);
+
+	} else {
+		m_serverTS->Stop();
+		m_serverTS.reset();
+	}
 }
 
 void xMainWnd::OnConnectTo(wxCommandEvent& event) {

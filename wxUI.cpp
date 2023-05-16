@@ -34,20 +34,31 @@ IMainWnd::IMainWnd( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	ui_textPort = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("9000"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_RICH );
 	gSizer1->Add( ui_textPort, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
+	ui_chkListenerTS = new wxCheckBox( sbSizerConnection->GetStaticBox(), wxID_ANY, _("EchoServerTS - Port:"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	gSizer1->Add( ui_chkListenerTS, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	ui_textPortTS = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("9001"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_RICH );
+	gSizer1->Add( ui_textPortTS, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
 	ui_btnConnectTo = new wxButton( sbSizerConnection->GetStaticBox(), wxID_ANY, _("Connect To:"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_btnConnectTo, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	ui_textIP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:9000"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_RICH );
+	ui_textIP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:9001"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_RICH );
 	gSizer1->Add( ui_textIP, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	sbSizerConnection->Add( gSizer1, 0, 0, 5 );
 
+	ui_textStatus = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
+	ui_textStatus->SetMinSize( wxSize( -1,80 ) );
 
-	bSizer14->Add( sbSizerConnection, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	sbSizerConnection->Add( ui_textStatus, 0, wxALL|wxEXPAND, 5 );
 
 
-	bSizerTOP->Add( bSizer14, 1, wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer14->Add( sbSizerConnection, 1, 0, 5 );
+
+
+	bSizerTOP->Add( bSizer14, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	this->SetSizer( bSizerTOP );
@@ -62,6 +73,7 @@ IMainWnd::IMainWnd( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Connect( wxEVT_MOVE, wxMoveEventHandler( IMainWnd::OnMove ) );
 	this->Connect( wxEVT_SIZE, wxSizeEventHandler( IMainWnd::OnSize ) );
 	ui_chkListener->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( IMainWnd::OnChkListen ), NULL, this );
+	ui_chkListenerTS->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( IMainWnd::OnChkListenTS ), NULL, this );
 	ui_btnConnectTo->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IMainWnd::OnConnectTo ), NULL, this );
 	this->Connect( wxTIMER_UPDATE_UI, wxEVT_TIMER, wxTimerEventHandler( IMainWnd::OnTimer_UpdateUI ) );
 }
@@ -72,6 +84,7 @@ IMainWnd::~IMainWnd()
 	this->Disconnect( wxEVT_MOVE, wxMoveEventHandler( IMainWnd::OnMove ) );
 	this->Disconnect( wxEVT_SIZE, wxSizeEventHandler( IMainWnd::OnSize ) );
 	ui_chkListener->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( IMainWnd::OnChkListen ), NULL, this );
+	ui_chkListenerTS->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( IMainWnd::OnChkListenTS ), NULL, this );
 	ui_btnConnectTo->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( IMainWnd::OnConnectTo ), NULL, this );
 	this->Disconnect( wxTIMER_UPDATE_UI, wxEVT_TIMER, wxTimerEventHandler( IMainWnd::OnTimer_UpdateUI ) );
 

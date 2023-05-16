@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 #include "wx/wx.h"
 #include "wx/dataview.h"
-#include "wx/webview.h"
-#include "wx/glcanvas.h"
+//#include "wx/webview.h"
+//#include "wx/glcanvas.h"
 #include "wx/stdpaths.h"
 #include "wx/msw/registry.h"
 
@@ -27,6 +27,12 @@
 //#define BOOST_ASIO_NO_DEPRECATED_MSGS
 #include "boost/asio.hpp"
 #include "boost/bind/bind.hpp"
+#include "boost/asio/co_spawn.hpp"
+#include "boost/asio/detached.hpp"
+#include "boost/asio/io_context.hpp"
+#include "boost/asio/ip/tcp.hpp"
+#include "boost/asio/signal_set.hpp"
+#include "boost/asio/write.hpp"
 
 #include "gtl/gtl.h"
 #include "gtl/reflection_glaze.h"

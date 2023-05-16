@@ -49,21 +49,25 @@ namespace ui
 
 			wxCheckBox* ui_chkListener;
 			wxTextCtrl* ui_textPort;
+			wxCheckBox* ui_chkListenerTS;
+			wxTextCtrl* ui_textPortTS;
 			wxButton* ui_btnConnectTo;
 			wxTextCtrl* ui_textIP;
+			wxTextCtrl* ui_textStatus;
 			wxTimer m_timerUpdateUI;
 
 			// Virtual event handlers, override them in your derived class
 			virtual void OnMove( wxMoveEvent& event ) = 0;
 			virtual void OnSize( wxSizeEvent& event ) = 0;
 			virtual void OnChkListen( wxCommandEvent& event ) = 0;
+			virtual void OnChkListenTS( wxCommandEvent& event ) = 0;
 			virtual void OnConnectTo( wxCommandEvent& event ) = 0;
 			virtual void OnTimer_UpdateUI( wxTimerEvent& event ) = 0;
 
 
 		public:
 
-			IMainWnd( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("TCP/IP Tester"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 310,167 ), long style = wxDEFAULT_FRAME_STYLE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxTAB_TRAVERSAL );
+			IMainWnd( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("TCP/IP Tester"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 296,313 ), long style = wxDEFAULT_FRAME_STYLE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxTAB_TRAVERSAL );
 
 			~IMainWnd();
 
