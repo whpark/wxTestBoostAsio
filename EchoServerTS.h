@@ -7,14 +7,14 @@ class xEchoServerTS {
 public:
 	using this_t = xEchoServerTS;
 
-	asio::io_context m_io_context{4};
+	asio::io_context m_io_context;
 	std::shared_mutex m_mtxSockets;
 	std::set<asio::ip::tcp::socket*> m_sockets;
 
 	std::optional<std::jthread> m_worker;
 
 public:
-	xEchoServerTS() {
+	xEchoServerTS(int n_thread_hint = 4) : m_io_context(n_thread_hint) {
 		m_io_context.stop();
 	}
 	~xEchoServerTS() {
@@ -42,7 +42,7 @@ public:
 		{
 			std::unique_lock lock(m_mtxSockets);
 			for (auto* socket : m_sockets) {
-				socket->shutdown(asio::socket_base::shutdown_type::shutdown_both);
+				socket->shutdown(socket->shutdown_both);
 			}
 		}
 
