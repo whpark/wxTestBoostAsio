@@ -51,8 +51,14 @@ namespace ui
 			wxTextCtrl* ui_textPort;
 			wxCheckBox* ui_chkListenerTS;
 			wxTextCtrl* ui_textPortTS;
+			wxCheckBox* ui_chkListenerUDP;
+			wxTextCtrl* ui_textPortUDP;
 			wxButton* ui_btnConnectTo;
 			wxTextCtrl* ui_textIP;
+			wxButton* ui_btnConnectToTS;
+			wxTextCtrl* ui_textIP_TS;
+			wxButton* ui_btnConnectToUDP;
+			wxTextCtrl* ui_textIP_UDP;
 			wxTextCtrl* ui_textStatus;
 			wxTimer m_timerUpdateUI;
 
@@ -61,13 +67,16 @@ namespace ui
 			virtual void OnSize( wxSizeEvent& event ) = 0;
 			virtual void OnChkListen( wxCommandEvent& event ) = 0;
 			virtual void OnChkListenTS( wxCommandEvent& event ) = 0;
+			virtual void OnChkListenUDP( wxCommandEvent& event ) = 0;
 			virtual void OnConnectTo( wxCommandEvent& event ) = 0;
+			virtual void OnConnectToTS( wxCommandEvent& event ) = 0;
+			virtual void OnConnectToUDP( wxCommandEvent& event ) = 0;
 			virtual void OnTimer_UpdateUI( wxTimerEvent& event ) = 0;
 
 
 		public:
 
-			IMainWnd( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("TCP/IP Tester"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 296,313 ), long style = wxDEFAULT_FRAME_STYLE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxTAB_TRAVERSAL );
+			IMainWnd( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("TCP/IP Tester"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 404,318 ), long style = wxDEFAULT_FRAME_STYLE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxTAB_TRAVERSAL );
 
 			~IMainWnd();
 

@@ -198,6 +198,7 @@ xcopy /dy $(PathGTL)\bin\wx.x$(PlatformArchitecture)$(Configuration[0]).dll $(Ta
     <ClInclude Include="common.h" />
     <ClInclude Include="EchoServer.h" />
     <ClInclude Include="EchoServerTS.h" />
+    <ClInclude Include="EchoServerUDP.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Comm.h" />
     <ClInclude Include="ChatServer.h" />

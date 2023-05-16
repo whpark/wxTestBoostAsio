@@ -31,21 +31,23 @@ void xMainWnd::OnTimer_UpdateUI(wxTimerEvent& event) {
 	if (m_listener and m_bListenerStopped and m_listener->joinable()) {
 		m_listener.reset();
 	}
-	if (ui_chkListener->IsChecked()) {
-		if (!m_listener)
-			ui_chkListener->Set3StateValue(wxCheckBoxState::wxCHK_UNCHECKED);
-	} else {
-		if (m_listener)
-			ui_chkListener->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
-	}
-	if (ui_chkListenerTS->IsChecked()) {
-		if (!m_serverTS)
-			ui_chkListenerTS->Set3StateValue(wxCheckBoxState::wxCHK_UNCHECKED);
-	}
-	else {
-		if (m_serverTS)
-			ui_chkListenerTS->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
-	}
+
+	auto UpdateChk = [&](auto* ctrl, bool b) {
+		if (!ctrl)
+			return;
+		if (ctrl->IsChecked()) {
+			if (!b)
+				ctrl->Set3StateValue(wxCheckBoxState::wxCHK_UNCHECKED);
+		}
+		else {
+			if (b)
+				ctrl->Set3StateValue(wxCheckBoxState::wxCHK_CHECKED);
+		}
+	};
+
+	UpdateChk(ui_chkListener, (bool)m_listener);
+	UpdateChk(ui_chkListenerTS, (bool)m_serverTS);
+	UpdateChk(ui_chkListenerUDP, m_serverUDP.IsRuning());
 
 	std::string str;
 	if (m_serverTS) {
@@ -114,23 +116,46 @@ void xMainWnd::OnChkListenTS(wxCommandEvent& event) {
 	}
 }
 
-void xMainWnd::OnConnectTo(wxCommandEvent& event) {
-	auto url = ui_textIP->GetValue();
+void xMainWnd::OnChkListenUDP(wxCommandEvent& event) {
+	if (m_serverUDP.IsRuning()) {
+		m_serverUDP.Stop();
+	} else {
+		int port = std::atoi(ui_textPortUDP->GetValue().c_str());
+		m_serverUDP.Start(port);
+	}
+}
+
+template < bool bUDP >
+bool xMainWnd::ConnectTo(wxString const& url) {
 	// split url into ip and port
 	auto pos = url.find(':');
-	if (pos == std::string::npos) {
+	if (pos == url.npos) {
 		Log("Invalid URL");
-		return;
+		return false;
 	}
 	std::string ip = url.substr(0, pos).ToStdString();
 	auto port = atoi(url.substr(pos + 1));
 	if (port == 0) {
 		Log("Invalid URL");
-		return;
+		return false;
 	}
 
-	auto worker = std::make_unique<xWorkerWnd>(this, ip, port);
+	auto worker = std::make_unique<std::conditional_t<bUDP, xUDPWorkerWnd, xWorkerWnd>>(this, ip, port);
 	worker->Show(true);
 	worker->SetFocus();
 	worker.release();
+
+	return true;
+}
+
+void xMainWnd::OnConnectTo(wxCommandEvent& event) {
+	ConnectTo<false>(ui_textIP->GetValue());
+}
+
+void xMainWnd::OnConnectToTS(wxCommandEvent& event) {
+	ConnectTo<false>(ui_textIP_TS->GetValue());
+}
+
+void xMainWnd::OnConnectToUDP(wxCommandEvent& event) {
+	ConnectTo<true>(ui_textIP_UDP->GetValue());
 }

@@ -59,6 +59,9 @@
     <ClInclude Include="EchoServerTS.h">
       <Filter>Comm</Filter>
     </ClInclude>
+    <ClInclude Include="EchoServerUDP.h">
+      <Filter>Comm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wxDesktopApp.rc">

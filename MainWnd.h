@@ -33,6 +33,7 @@ protected:
 	std::optional<std::jthread> m_listener;
 	bool m_bListenerStopped{};
 	std::optional<xEchoServerTS> m_serverTS;
+	xEchoServerUDP m_serverUDP{4};
 
 protected:
 	virtual void OnMove( wxMoveEvent& event ) override;
@@ -41,7 +42,12 @@ protected:
 
 	virtual void OnChkListen( wxCommandEvent& event ) override;
 	virtual void OnChkListenTS( wxCommandEvent& event ) override;
+	virtual void OnChkListenUDP( wxCommandEvent& event ) override;
+	template < bool bUDP = false >
+	bool ConnectTo(wxString const& url);
 	virtual void OnConnectTo( wxCommandEvent& event ) override;
+	virtual void OnConnectToTS( wxCommandEvent& event ) override;
+	virtual void OnConnectToUDP( wxCommandEvent& event ) override;
 
 };
 
