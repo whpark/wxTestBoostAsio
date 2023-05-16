@@ -23,7 +23,9 @@ public:
 		if (m_server)
 			return false;
 
-		m_socket.emplace(m_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port));
+		asio::ip::address_v4::bytes_type ip = { 127, 0, 0, 1};	// binding to NIC
+		asio::ip::address_v4 addr(ip);
+		m_socket.emplace(m_io_context, asio::ip::udp::endpoint(addr, port));
 
 		m_server.emplace([this, port, &socket = *m_socket](std::stop_token st)
 			{
