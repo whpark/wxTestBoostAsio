@@ -83,7 +83,9 @@ public:
 
 		m_worker.emplace([this]
 			{
-				m_io_context.run();
+				try {
+					m_io_context.run();
+				} catch (...) { }
 				Notify(xEvtIPComm::EVT_DISCONNECTED, "Disconnected");
 			}
 		);

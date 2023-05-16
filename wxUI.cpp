@@ -31,37 +31,37 @@ IMainWnd::IMainWnd( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	ui_chkListener = new wxCheckBox( sbSizerConnection->GetStaticBox(), wxID_ANY, _("Listen - Port:"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	gSizer1->Add( ui_chkListener, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT, 5 );
 
-	ui_textPort = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("9000"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textPort = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("29000"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textPort, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	ui_chkListenerTS = new wxCheckBox( sbSizerConnection->GetStaticBox(), wxID_ANY, _("EchoServerTS - Port:"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	gSizer1->Add( ui_chkListenerTS, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	ui_textPortTS = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("9001"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textPortTS = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("29001"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textPortTS, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	ui_chkListenerUDP = new wxCheckBox( sbSizerConnection->GetStaticBox(), wxID_ANY, _("EchoServerUDP - Port:"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	gSizer1->Add( ui_chkListenerUDP, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT, 5 );
 
-	ui_textPortUDP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("9002"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textPortUDP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("29002"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textPortUDP, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	ui_btnConnectTo = new wxButton( sbSizerConnection->GetStaticBox(), wxID_ANY, _("Connect To:"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_btnConnectTo, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	ui_textIP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:9000"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textIP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:29000"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textIP, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	ui_btnConnectToTS = new wxButton( sbSizerConnection->GetStaticBox(), wxID_ANY, _("Connect To:"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_btnConnectToTS, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	ui_textIP_TS = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:9001"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textIP_TS = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:29001"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textIP_TS, 0, wxALL, 5 );
 
 	ui_btnConnectToUDP = new wxButton( sbSizerConnection->GetStaticBox(), wxID_ANY, _("Connect To:"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_btnConnectToUDP, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	ui_textIP_UDP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:9002"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL );
+	ui_textIP_UDP = new wxTextCtrl( sbSizerConnection->GetStaticBox(), wxID_ANY, _("127.0.0.1:29002"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( ui_textIP_UDP, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
