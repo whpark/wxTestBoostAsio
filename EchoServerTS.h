@@ -31,7 +31,7 @@ public:
 		if (m_io_context.stopped())
 			m_io_context.restart();
 		asio::co_spawn(m_io_context, Listener(port), asio::detached);
-		m_worker.emplace([this]{ m_io_context.run();});
+		m_worker.emplace([this] { try { m_io_context.run(); } catch (...) { Log("EchoServerTS FAILED"); } });
 		return true;
 	}
 	void Stop() {

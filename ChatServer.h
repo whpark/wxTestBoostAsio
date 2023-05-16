@@ -113,25 +113,40 @@ protected:
 /// @brief 
 class xChatServer {
 protected:
-	asio::io_context& io_context_;
-	xChatRoom room_;
+	asio::io_context& m_io_context;
+	xChatRoom m_room;
+	std::optional<asio::ip::tcp::acceptor> m_acceptor;
 public:
-	xChatServer(asio::io_context& io_context, short port)
-		: io_context_(io_context), acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
+	xChatServer(asio::io_context& io_context) : m_io_context(io_context) {
+	}
+
+	bool Start(short port) try {
+		if (m_acceptor)
+			return false;
+		m_acceptor.emplace(m_io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
 		Accept();
+		return true;
+	} catch (std::exception& e) {
+		Log("Exception: {}", e.what());
+		return false;
+	} catch (...) {
+		Log("Exception: unknown");
+		return false;
 	}
 
 private:
 	void Accept() {
+		if (!m_acceptor)
+			return;
 		Log("ENTER acceptor thread{}", std::this_thread::get_id());
-		acceptor_.async_accept(
+		m_acceptor->async_accept(
 			[this](boost::system::error_code ec, asio::ip::tcp::socket socket)
 			{
 				if (ec)
 					return;
 
 				Log("<<< session {}", std::this_thread::get_id());
-				std::make_shared<xChatSession>(std::move(socket), room_)->Start();
+				std::make_shared<xChatSession>(std::move(socket), m_room)->Start();
 				Log(">>> session {}", std::this_thread::get_id());
 
 				Accept();
@@ -139,6 +154,4 @@ private:
 		);
 		Log("EXIT acceptor");
 	}
-
-	asio::ip::tcp::acceptor acceptor_;
 };

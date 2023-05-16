@@ -85,7 +85,9 @@ public:
 			{
 				try {
 					m_io_context.run();
-				} catch (...) { }
+				} catch (...) {
+					Log("xChatClient::run() stopped");
+				}
 				Notify(xEvtIPComm::EVT_DISCONNECTED, "Disconnected");
 			}
 		);

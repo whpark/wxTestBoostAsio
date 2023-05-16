@@ -74,20 +74,14 @@ void xMainWnd::OnChkListen(wxCommandEvent& event) {
 
 		m_bListenerStopped = false;
 		m_listener = std::jthread([port, this](std::stop_token st) {
-			{
+			try {
 				if (m_io_context.stopped())
 					m_io_context.restart();
-				//asio::io_context io_context;
-				xChatServer server(m_io_context, port);
-
-				Log("Listener thread started");
-				m_io_context.run();
-				//while (!st.stop_requested()) {
-				//	m_io_context.poll_one();
-				//	std::this_thread::yield();
-				//}
-				//std::this_thread::sleep_for(1000ms);
-				Log("Listener thread stopped");
+				xChatServer server(m_io_context);
+				if (server.Start(port))
+					m_io_context.run();
+			} catch (...) {
+				Log("Exception in listener thread");
 			}
 			m_bListenerStopped = true;
 		});

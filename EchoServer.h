@@ -57,18 +57,30 @@ private:
 /// @brief 
 class xEchoServer {
 protected:
-	asio::io_context& io_context_;
-	asio::ip::tcp::acceptor acceptor_;
+	asio::io_context& m_io_context;
+	std::optional<asio::ip::tcp::acceptor> m_acceptor;
 public:
-	xEchoServer(asio::io_context& io_context, short port)
-		: io_context_(io_context), acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
-		Accept();
+	xEchoServer(asio::io_context& io_context) : m_io_context(io_context) {
 	}
 
-private:
+	bool Start(short port) {
+		try {
+			auto endpoint = asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port);
+			m_acceptor.emplace(m_io_context, endpoint);
+			Accept();
+		} catch (std::exception& e) {
+			Log("EchoServer Error : {}", e.what());
+			return false;
+		}
+		return true;
+	}
+
+protected:
 	void Accept() {
+		if (!m_acceptor)
+			return;
 		Log("ENTER acceptor thread{}", std::this_thread::get_id());
-		acceptor_.async_accept(
+		m_acceptor->async_accept(
 			[this](boost::system::error_code ec, asio::ip::tcp::socket socket)
 			{
 				if (ec) {
