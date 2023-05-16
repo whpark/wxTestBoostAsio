@@ -102,8 +102,8 @@ void xMainWnd::OnChkListenTS(wxCommandEvent& event) {
 		int port = std::atoi(ui_textPortTS->GetValue().c_str());
 
 		m_serverTS.emplace();
-		m_serverTS->Start(port);
-
+		if (!m_serverTS->Start(port))
+			m_serverTS.reset();
 	} else {
 		m_serverTS->Stop();
 		m_serverTS.reset();

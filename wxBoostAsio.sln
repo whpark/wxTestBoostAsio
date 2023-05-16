@@ -7,16 +7,28 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxBoostAsio", "wxBoostAsio.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug.v142|x64 = Debug.v142|x64
+		Debug.v142|x86 = Debug.v142|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release.v142|x64 = Release.v142|x64
+		Release.v142|x86 = Release.v142|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug.v142|x64.ActiveCfg = Debug.v142|x64
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug.v142|x64.Build.0 = Debug.v142|x64
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug.v142|x86.ActiveCfg = Debug.v142|Win32
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug.v142|x86.Build.0 = Debug.v142|Win32
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug|x64.ActiveCfg = Debug|x64
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug|x64.Build.0 = Debug|x64
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug|x86.ActiveCfg = Debug|Win32
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Debug|x86.Build.0 = Debug|Win32
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release.v142|x64.ActiveCfg = Release.v142|x64
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release.v142|x64.Build.0 = Release.v142|x64
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release.v142|x86.ActiveCfg = Release.v142|Win32
+		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release.v142|x86.Build.0 = Release.v142|Win32
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release|x64.ActiveCfg = Release|x64
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release|x64.Build.0 = Release|x64
 		{D8CB9284-AF69-4DC8-9CD3-BE885C4DDDE9}.Release|x86.ActiveCfg = Release|Win32

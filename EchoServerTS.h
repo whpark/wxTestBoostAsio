@@ -12,10 +12,16 @@ public:
 	std::set<asio::ip::tcp::socket*> m_sockets;
 
 	std::optional<std::jthread> m_worker;
+	HANDLE m_hEvent{};
+
+	std::atomic<bool> m_bListenerOK{}; 
+	std::optional<std::barrier<>> m_listenerStarted;
 
 public:
 	xEchoServerTS(int n_thread_hint = 4) : m_io_context(n_thread_hint) {
 		m_io_context.stop();
+		m_hEvent = CreateEvent(nullptr, true, false, nullptr);
+		ResetEvent(m_hEvent);
 	}
 	~xEchoServerTS() {
 		Stop();
@@ -28,10 +34,18 @@ public:
 	bool Start(int port) {
 		if (m_worker)
 			return false;
+		m_listenerStarted.emplace(2);
+		m_bListenerOK = false;
 		if (m_io_context.stopped())
 			m_io_context.restart();
 		asio::co_spawn(m_io_context, Listener(port), asio::detached);
 		m_worker.emplace([this] { try { m_io_context.run(); } catch (...) { Log("EchoServerTS FAILED"); } });
+		//::WaitForSingleObject(m_hEvent, INFINITE);
+		m_listenerStarted->arrive_and_wait();
+		if (!m_bListenerOK) {
+			Stop();
+			return false;
+		}
 		return true;
 	}
 	void Stop() {
@@ -82,14 +96,36 @@ protected:
 	}
 
 	asio::awaitable<void> Listener(int port) {
-		Log("ListenerTS Started");
-		auto executor = co_await asio::this_coro::executor;
-		asio::ip::tcp::acceptor acceptor(executor, asio::ip::tcp::endpoint{asio::ip::tcp::v4(), (uint_least16_t)port});
-		while(true) {
-			asio::ip::tcp::socket socket = co_await acceptor.async_accept(asio::use_awaitable);
-			asio::co_spawn(executor, Echo(std::move(socket)), asio::detached);
+		m_bListenerOK = false;
+		try {
+			Log("ListenerTS Started");
+			auto executor = co_await asio::this_coro::executor;
+			std::optional<asio::ip::tcp::acceptor> acceptor;
+			try {
+				acceptor.emplace(executor, asio::ip::tcp::endpoint{asio::ip::tcp::v4(), (uint_least16_t)port});
+				m_bListenerOK = true;
+			} catch (std::exception& e) {
+				Log("ERROR! ListenerTS exception : {}", e.what());
+			} catch (...) {
+				Log("ERROR! ListenerTS exception : unknown");
+			}
+			m_listenerStarted->arrive();
+			if (!m_bListenerOK)
+				co_return ;
+
+			//SetEvent(m_hEvent);
+			while(true) {
+				asio::ip::tcp::socket socket = co_await acceptor->async_accept(asio::use_awaitable);
+				asio::co_spawn(executor, Echo(std::move(socket)), asio::detached);
+			}
+			Log("ListenerTS Stopped");
+		} catch (std::exception& e) {
+			m_listenerStarted->arrive();
+			Log("ERROR! ListenerTS exception : {}", e.what());
+		} catch (...) {
+			m_listenerStarted->arrive();
+			Log("ERROR! ListenerTS exception : unknown");
 		}
-		Log("ListenerTS Stopped");
 	}
 
 };
