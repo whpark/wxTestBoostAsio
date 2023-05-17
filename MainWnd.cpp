@@ -4,10 +4,18 @@
 #include "WorkerWnd.h"
 #include "gtl/wx/util.h"
 
-
 xMainWnd::xMainWnd( wxWindow* parent ) : ui::IMainWnd( parent ) {
 	gtl::wx::LoadWindowPosition(wxGetApp().m_reg, "MainWindow"s, this);
 	m_bInitialized = true;
+
+	//asio::io_context io;
+	//asio::steady_timer timer(io, 3s);
+
+	//Log("before");
+	//timer.async_wait([&io](auto const& e){ Log("Stop Timer, {}", e.what()); io.stop(); });
+	//Log("after");
+	//io.run();
+	//Log("after run");
 }
 
 void xMainWnd::OnMove(wxMoveEvent& event) {
