@@ -27,7 +27,6 @@ public:
     }
 
     virtual bool OnInit() override;
-    virtual int OnRun() override;
 
     bool LoadSettings();
     bool SaveSettings();

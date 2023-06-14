@@ -77,10 +77,6 @@ bool wxDesktopApp::OnInit() {
 	return true;
 }
 
-int wxDesktopApp::OnRun() {
-	return base_t::OnRun();
-}
-
 bool wxDesktopApp::LoadSettings() try {
 	json j;
 	if (stdfs::exists(m_pathSettings)) {

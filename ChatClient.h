@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //=================================================================================================================================
 /// @brief 
@@ -93,6 +93,8 @@ public:
 		);
 	};
 	void Write(xChatMessage msg) override {
+		if (msg.empty())
+			return;
 		if (!msg.ends_with('\n'))
 			msg += "\n";
 		asio::post(m_io_context, [this, str = std::move(msg)]{
